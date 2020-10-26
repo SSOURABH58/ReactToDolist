@@ -1,38 +1,251 @@
-.App {
-  text-align: center;
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body,.App,.root{
+    background-image: linear-gradient(to right,#7396FF,#E773FF);
+    font-size:16px;
+    font-family: 'Poppins', sans-serif;
+    color:white;
+    /* height: 100vh; */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+header h1{
+    font-size: 4rem;
+}
+.top{
+    display: flex;
+    justify-content: space-between;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.weatherd,.timetab{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: flex-end;
+    text-align: center;
+
 }
 
-.App-link {
-  color: #61dafb;
+.weatherd h1,.weatherd p{
+    margin-top: 2%;
+    margin-right: 20px;
+}
+.timetab h1,.timetab p{
+    margin-top: 2%;
+    margin-left: 20px;
+}
+.weatherd h1,.timetab h1{
+    font-size: 3rem;
+}
+.weatherd p,.timetab p{
+    text-align: center;
+    margin-top: 0;
+}
+.timetab{
+    align-self: flex-start;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+
+header,.inputtabe,form{
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 1.5% 0;
+
+}
+
+
+.weather{
+    display: none;
+}
+
+.inputbox,.addtask,.filter{
+    font-size: 1.3rem;
+    border : 0;
+    padding: 10px;
+}
+
+.filter{
+    margin: 0 10px;
+}
+
+.addtask,.filter{
+    background-color:  white;
+    color:#7396FF;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.addtask:hover,.filter:hover{
+    background-color: #7396FF;
+    color:white;
+}
+
+.tasks{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 3%;
+}
+
+
+.taskcont{
+    
+    display: flex;
+    align-items: center;
+    justify-content:space-between;
+    min-width: 35%;
+    margin: .2rem;
+    background-color: white;
+    min-width: 30%;
+    max-width: 80%;
+}
+
+
+@media screen and (max-width:850px) {
+    .taskcont{
+        min-width: 50%;
+    }
+    
+    .weatherd{
+        display: none;
+    }
+    .timetab{
+        display: none;
+    }
+    header{
+        margin-top:10%;
+        flex-direction: column;
+    }
+    .weather{
+        display: block;
+    }
+    
+}
+@media screen and (max-width:500px) {
+    .taskcont{
+        min-width: 65%;
+    }
+    .filter{
+        margin: 10px;
+    }
+    header{
+        margin-top:10%;
+        flex-direction: column;
+    }
+    .weather{
+        display: block;
+    }
+    .weatherd{
+        display: none;
+    }
+    .timetab{
+        display: none;
+    }
+    
+}
+
+.tasklable,.taskcheak,.tasktrash{
+    padding: 3.5px 8px;
+    font-size: 1.2rem;
+    border: 0;
+}
+
+.taskcheak,.tasktrash{
+    background-color:white;
+    color:#7396FF ;
+    cursor: pointer;
+}
+.tasktrash{
+    margin-right: 5px;
+}
+.taskcheak:hover,.tasktrash:hover{
+    background-color:#7396FF;
+    color: white;
+}
+
+.tasklable{
+    list-style: none;
+    color:#7396FF;
+    flex-grow: 1;
+    padding-left: 0 10px;
+    white-space: nowrap;
+    overflow: scroll;
+    max-width: 80%;
+    scroll-behavior: auto;
+    height: auto;
+    margin-left: 8px;
+}
+
+::-webkit-scrollbar{
+    display: none;
+}
+
+i{
+    pointer-events: none;
+}
+
+.cheaked {
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+.cheaked li{
+    color: #E773FF;
+}
+.taskcont{
+    min-height: 1rem;
+    
+}
+.deleted{
+    transition:  .3s ease-in-out;
+    min-height: 0;
+    height: 0;
+    opacity: 0;
+}
+
+.inputbox{
+    border-radius: 1.5rem 0 0 1.5rem;
+}
+
+.addtask,.tasktrash{
+    border-radius: 0 1.5rem 1.5rem 0;
+}
+
+.taskcont,.filter{
+    border-radius: 1.5rem;
+}
+
+footer{
+    display: flex;
+    align-items: flex-end;
+    justify-self: flex-end;
+    flex-grow: 1;
+}
+footer p{
+    margin: 5px;
+}
+.tasklable{
+    display: flex;
+    align-items: center;
+}
+.circlenum{
+    background-color: #7396fffd;
+    color: white;
+    text-align: center;
+    font-size: 1rem;
+    border-radius: 100%;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-left: 1rem;
+}
+.displaynone{
+    display: none;
 }
