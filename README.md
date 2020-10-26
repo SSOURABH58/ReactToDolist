@@ -1,3 +1,18 @@
+# To Do List 
+    I recreated my plain vennela js ToDo list with React to learn react and get my hands dirty .
+
+    the vennela project : https://github.com/SSOURABH58/venelaJsTodolist
+
+    I used a proxy to save my api key which get from Open Weather 
+
+    the proxy back-end project : https://github.com/SSOURABH58/node-server-proxy
+
+    Thank you for reading 😊
+
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
