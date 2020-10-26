@@ -9,6 +9,12 @@ function Top({Weather}){
         if(time[0]>12){
             time[0]-=12
             time.push("pm")
+        }else if(time[0]===0){
+            time[0]=12
+            time.push("am")
+        }else if(time[0]===12){
+            time[0]=12
+            time.push("pm")
         }else{
             time.push("am")
         }

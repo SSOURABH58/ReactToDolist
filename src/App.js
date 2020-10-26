@@ -68,6 +68,8 @@ const dofilter=()=>
                         break
                         case "🌦" : icon="🌧" 
                         break
+                        default:
+                          break
                     }
                 }
                 setWeather({icon:icon,title:data.title,temp:data.temp,city:data.city})
