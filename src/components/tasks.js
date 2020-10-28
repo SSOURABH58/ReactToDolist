@@ -1,6 +1,8 @@
 import React from 'react'
+import { Draggable } from 'react-beautiful-dnd';
 
-function Tasks({setTodos,lable,id,ischeaked,Todos,istrashed,dupeid}){
+
+function Tasks({setTodos,lable,id,ischeaked,Todos,istrashed,dupeid,index}){
     const trashtask=()=>{
         setTodos(Todos.map(todo=>{
             todo.id===id?todo.istrashed=true:todo.istrashed=false
@@ -21,19 +23,39 @@ function Tasks({setTodos,lable,id,ischeaked,Todos,istrashed,dupeid}){
     }
 
     return(
+        <Draggable draggableId={String(id)} index={index} key={id}>
+        {(provided)=>{
+      if (
+		typeof (
+          provided.draggableProps.onTransitionEnd
+        ) === 'function'
+      ) {
+        window?.requestAnimationFrame(() =>
+          provided.draggableProps.onTransitionEnd({
+            propertyName: 'transform',
+          })
+        );
+      }
+      return(
+        <div 
+        ref={provided.innerRef}
+        {...provided.draggableProps}
+       
         
-        <div id={id} onTransitionEnd={transend} className={`taskcont ${istrashed?"deleted":""} ${ischeaked?"cheaked":""}`}>
+        id={id} onTransitionEnd={transend} className={`taskcont ${istrashed?"deleted":""} ${ischeaked?"cheaked":""}`}>
+            <div className="draghand" {...provided.dragHandleProps} ><i className="fa fa-hand-rock-o draghand"></i></div>
             <li className="tasklable">
                 {lable}
-                <p className={dupeid?"circlenum":"displaynone"}>{dupeid}</p>
+                <p className={dupeid&&!istrashed?"circlenum":"displaynone"}>{dupeid}</p>
             </li>
-            <button onClick={cheaktask} className={`taskcheak ${istrashed?"deleted":""}`}><i className={ischeaked?"fa fa-remove":"fa fa-check-square"}></i></button>
-            <button onClick={trashtask} className={`tasktrash ${istrashed?"deleted":""}`}><i className="fa fa-trash"></i></button>
+            <button onClick={cheaktask} className={`taskcheak ${istrashed?"deleted":""}`}><i className={ !istrashed? ischeaked?"fa fa-remove":"fa fa-check-square":""}></i></button>
+            <button onClick={trashtask} className={`tasktrash ${istrashed?"deleted":""}`}><i className={ !istrashed? "fa fa-trash":""}></i></button>
         </div>
+        )}}
+        </Draggable>
     
     );
 }
 
-// taskcheak
 
 export default Tasks

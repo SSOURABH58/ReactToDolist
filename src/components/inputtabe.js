@@ -10,7 +10,7 @@ function Inputtabe({Inputtext,setInputtext,setTodos,Todos,setFitler}){
         clickevent.preventDefault()
         const date=new Date()
         const dupeid=Todos.filter(todo=>todo.lable===Inputtext).length
-        const todo = {id:date.getTime(),lable:Inputtext,ischeaked:false,istrashed:false,dupeid:dupeid}
+        const todo = {id:date.getTime(),lable:Inputtext,ischeaked:false,istrashed:false,dupeid:dupeid,filterindex:Todos.length}
         setTodos([...Todos,todo])
         setInputtext("")
     }
