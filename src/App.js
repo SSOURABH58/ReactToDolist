@@ -1,5 +1,6 @@
 import React,{useState,useEffect} from 'react'
 import './App.css';
+import { DragDropContext,Droppable } from 'react-beautiful-dnd';
 
 //components 
 import Inputtabe from './components/inputtabe'
@@ -15,10 +16,26 @@ const [Weather,setWeather]=useState([])
 
 const dofilter=()=>
   {
+    const arangefilter=(list)=>{
+      for (let i = 0; i < list.length; i++) {
+        let smalest=list[i].filterindex
+        for (let j = i; j < list.length; j++) {
+          if(list[j].filterindex<smalest)
+            {
+            smalest=list[i].filterindex
+            let temp=list[i]
+            list[i]=list[j]
+            list[j]=temp
+            }
+          
+        }
+      }
+      return list
+    }
     switch (Filter) {
-      case "completed":setFilteredtodo(Todos.filter(todo=>todo.ischeaked===true))
+      case "completed":setFilteredtodo(arangefilter(Todos.filter(todo=>todo.ischeaked===true)))
         break;
-      case "uncompleted":setFilteredtodo(Todos.filter(todo=>todo.ischeaked===false))
+      case "uncompleted":setFilteredtodo(arangefilter(Todos.filter(todo=>todo.ischeaked===false)))
         break;
     
       default:setFilteredtodo(Todos)
@@ -78,6 +95,36 @@ const dofilter=()=>
     })
   }
 
+  const updatelist=(list,sindex,dindex)=>{
+  const temp = list.splice(sindex,1)
+  list.splice(dindex,0,temp[0])
+  return list
+  }
+
+  const updatefilterindex=(list,flist,sindex,dindex)=>{
+    const temp = flist.splice(sindex,1)
+    flist.splice(dindex,0,temp[0])
+    list.map(todo=>todo.filterindex=flist.indexOf(todo))
+    return list
+    }
+
+
+ const ondragend=(result)=>{
+  if(result.destination===null)
+  return
+  else if(result.source.index===result.destination.index)
+  return
+  else{
+    switch(Filter){
+      case "all":setTodos([...updatelist(Todos,result.source.index,result.destination.index)])
+        break
+      default:setTodos([...updatefilterindex(Todos,Filteredtodo,result.source.index,result.destination.index)]) 
+        break
+    }
+  
+}
+  }
+
   useEffect(getfromlocal,[])
   useEffect(savetolocal,[Todos])
   useEffect(dofilter,[Filter,Todos])
@@ -102,21 +149,36 @@ const dofilter=()=>
         Todos={Todos}
         setFitler={setFitler}
       />
-      <ul className="tasks">
-        {Filteredtodo.map(todo=>
-          <Tasks 
-          setTodos={setTodos}
-          Todos={Todos}
-          lable={todo.lable}
-          id={todo.id}  
-          ischeaked={todo.ischeaked}
-          istrashed={todo.istrashed}
-          dupeid={todo.dupeid}
-          key={todo.id}
-          />
-        )  
-        }
-      </ul>
+      <DragDropContext onDragEnd={ondragend}>
+        <Droppable droppableId="1">
+          {(provided)=>(
+          <ul 
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            className="tasks"
+          >
+            {Filteredtodo.map((todo,i)=>
+              
+                <Tasks 
+                key={todo.id}
+                index={i}
+                setTodos={setTodos}
+                Todos={Todos}
+                lable={todo.lable}
+                id={todo.id}  
+                ischeaked={todo.ischeaked}
+                istrashed={todo.istrashed}
+                dupeid={todo.dupeid}
+                />
+                
+            ) }
+           {provided.placeholder}
+          </ul>
+          
+           )}
+           
+        </Droppable>
+      </DragDropContext>
 
       <footer>
         <p>© Sourabh Soni 2020</p>
