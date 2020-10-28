@@ -150,6 +150,9 @@ header,.inputtabe,form{
     .timetab{
         display: none;
     }
+    .draghand:hover{
+    }
+    
     
 }
 
