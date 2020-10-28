@@ -46,7 +46,8 @@ function Tasks({setTodos,lable,id,ischeaked,Todos,istrashed,dupeid,index}){
             <div className="draghand" {...provided.dragHandleProps} ><i className="fa fa-hand-rock-o draghand"></i></div>
             <li className="tasklable">
                 {lable}
-                <p className={dupeid&&!istrashed?"circlenum":"displaynone"}>{dupeid}</p>
+            <p className={dupeid&&!istrashed?"circlenum":"dnone"}>{dupeid}</p>
+            {/*displaynone  */}
             </li>
             <button onClick={cheaktask} className={`taskcheak ${istrashed?"deleted":""}`}><i className={ !istrashed? ischeaked?"fa fa-remove":"fa fa-check-square":""}></i></button>
             <button onClick={trashtask} className={`tasktrash ${istrashed?"deleted":""}`}><i className={ !istrashed? "fa fa-trash":""}></i></button>

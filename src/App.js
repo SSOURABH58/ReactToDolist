@@ -18,14 +18,13 @@ const dofilter=()=>
   {
     const arangefilter=(list)=>{
       for (let i = 0; i < list.length; i++) {
-        let smalest=list[i].filterindex
-        for (let j = i; j < list.length; j++) {
-          if(list[j].filterindex<smalest)
+        for (let j = 0; j < list.length-1; j++) {
+          if(list[j].filterindex>list[j+1].filterindex)
             {
-            smalest=list[i].filterindex
-            let temp=list[i]
-            list[i]=list[j]
-            list[j]=temp
+              console.log(list)
+            let temp=list[j]
+            list[j]=list[j+1]
+            list[j+1]=temp
             }
           
         }

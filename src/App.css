@@ -240,7 +240,7 @@ footer p{
     align-items: center;
 }
 .circlenum{
-    background-color: #7396fffd;
+    background-color: #7396ff7a;
     color: white;
     text-align: center;
     font-size: 1rem;
@@ -248,9 +248,8 @@ footer p{
     width: 1.5rem;
     height: 1.5rem;
     margin-left: 1rem;
-    opacity: 60%;
 }
-.displaynone{
+.dnone{
     display: none;
 }
 
