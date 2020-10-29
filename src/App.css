@@ -120,6 +120,7 @@ header{
 }
 .inputbox{
     background-color: var(--primcolorFream);
+    color:var(--primcolorAbtn)
 }
 
 
