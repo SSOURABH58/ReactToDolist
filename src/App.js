@@ -57,14 +57,14 @@ const dofilter=()=>
     localStorage.setItem("date",JSON.stringify({date,quote}))
   }
 
-  function quotes(){
-    fetch('https://node-server-proxy-1.herokuapp.com/quote')
-        .then(res=>res.json())
-        .then(data=>{setquote(data)})
-        savetolocaldate()
-  }
+  
 
   const getfromlocal=()=>{
+    function quotes(){
+      fetch('https://node-server-proxy-1.herokuapp.com/quote')
+          .then(res=>res.json())
+          .then(data=>{setquote(data)})
+    }
     if(localStorage.getItem("todos")!==null){
       setTodos( JSON.parse(localStorage.getItem("todos")))
       setFilteredtodo(JSON.parse(localStorage.getItem("todos")))
@@ -173,11 +173,12 @@ const dofilter=()=>
 
 
   useEffect(getfromlocal
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+   
     ,[])
   useEffect(savetolocal,[Todos])
   useEffect(dofilter,[Filter,Todos])
   useEffect(weatherapiproxy,[])
+  useEffect(savetolocaldate,[quote])
 
 
   return (
