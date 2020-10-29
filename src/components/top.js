@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from 'react'
 
 function Top({Weather}){
-    const [Time,setTime]=useState([])
+    const [Time,setTime]=useState({hour:"--",min:"--",maridin:"--",day:"--",date:"--",mounth:"--",year:"--"})
     const getdate=()=>{
         let data=Date()
         data = data.split(" ",5)
