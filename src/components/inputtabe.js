@@ -41,7 +41,7 @@ function Inputtabe({Inputtext,setInputtext,setTodos,Todos,setFitler,Filter}){
                 <input onChange={getinput} value={Inputtext} type="text" className="inputbox"/>
                 <button onClick={settask} className="addtask" type="submit"><i className="fa fa-plus-square"></i></button>
             </form>
-            <div>
+            <div className="filtercont">
             <select onChange={setfilter} name="filter" className="filter">
                 <option value="all">All</option>
                 <option value="completed">Completed</option>

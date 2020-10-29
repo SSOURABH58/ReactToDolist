@@ -14,6 +14,7 @@ const [Todos,setTodos]=useState([])
 const [Filteredtodo,setFilteredtodo]=useState([])
 const [Weather,setWeather]=useState([])
 const [isdark,setisdark]=useState(false)
+const [quote,setquote]=useState({})
 
 const dofilter=()=>
   {
@@ -42,14 +43,46 @@ const dofilter=()=>
     }
   }
 
+
   const savetolocal=()=>{
     localStorage.setItem("todos",JSON.stringify(Todos))
+  }
+  const savetolocaldark=()=>{
+    localStorage.setItem("dark",JSON.stringify(!isdark))
+  }
+  const savetolocaldate=()=>{
+    let date=Date()
+    date=date.split(" ",3)
+    date=`${date[0]} ${date[1]} ${date[2]}`
+    localStorage.setItem("date",JSON.stringify({date,quote}))
   }
   const getfromlocal=()=>{
     if(localStorage.getItem("todos")!==null){
       setTodos( JSON.parse(localStorage.getItem("todos")))
       setFilteredtodo(JSON.parse(localStorage.getItem("todos")))
     }
+    if(localStorage.getItem("dark")!==null){
+      setisdark(JSON.parse(localStorage.getItem("dark")))
+    }
+    if(localStorage.getItem("date")!==null){
+      const prvdate=JSON.parse(localStorage.getItem("date"))
+      let date=Date()
+      date=date.split(" ",3)
+      date=`${date[0]} ${date[1]} ${date[2]}` 
+      if(prvdate.date!==date || prvdate.quote.q===undefined)
+        {console.log("callisg Quote")
+        quotes()}
+      else
+        setquote(prvdate.quote)
+    }else
+       quotes()
+  }
+  function quotes(){
+    console.log("Quote is called")
+    fetch('https://node-server-proxy-1.herokuapp.com/quote')
+        .then(res=>res.json())
+        .then(data=>{setquote(data)})
+        savetolocaldate()
   }
 
   function weatherapiproxy(){
@@ -126,18 +159,22 @@ const dofilter=()=>
 
   const enabledark = () =>{
     setisdark(!isdark)
-    // if(!isdark)
-    // setisdbg(true)
-    // else
-    // setisdbg(false)
+    savetolocaldark()
   }
-  
+
+
+
+  useEffect(()=>{
+    const interval=setInterval(weatherapiproxy,1000*60*60)
+    return ()=>clearInterval(interval)
+    },[])
 
 
   useEffect(getfromlocal,[])
   useEffect(savetolocal,[Todos])
   useEffect(dofilter,[Filter,Todos])
   useEffect(weatherapiproxy,[])
+
 
   return (
     <div className={`App ${isdark?"bodyDark":""}`}>
@@ -149,6 +186,7 @@ const dofilter=()=>
       <header>
         <button className="darkmodebtn" onClick={enabledark}><i className="fa fa-adjust"></i></button>
         <h1>To Do List</h1>
+         <blockquote className="quotes">&ldquo;{quote.q}&rdquo; <p> &mdash; {quote.a}</p></blockquote>
         <p className="weather">{Weather.icon==="-"?"Allow location or check internet":`${Weather.icon} ${Weather.title} at ${Weather.temp}℃ in ${Weather.city}`}</p>
       </header>
 

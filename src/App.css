@@ -115,6 +115,9 @@ header,.inputtabe,form{
     margin: 1.5% 0;
 
 }
+header{
+    flex-direction: column;
+}
 .inputbox{
     background-color: var(--primcolorFream);
 }
@@ -123,7 +126,10 @@ header,.inputtabe,form{
 .weather{
     display: none;
 }
-
+.filtercont{
+    display: flex;
+    justify-content: center;
+}
 .inputbox,.addtask,.filter{
     font-size: 1.3rem;
     border : 0;
@@ -220,6 +226,9 @@ header,.inputtabe,form{
     }
     .timetab{
         display: none;
+    }
+    .trashall{
+        padding: 10.5px;
     }
    
     
@@ -331,3 +340,21 @@ footer p{
 .draghand:hover{
     opacity: 50%;
 }
+.quotes{
+    text-align: center;
+    font-family: 'PT Mono', monospace;
+    
+    font-style: italic;
+    font-size: .8rem;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+
+    max-width: 98%;
+
+    
+}
+
