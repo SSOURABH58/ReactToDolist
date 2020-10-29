@@ -56,6 +56,14 @@ const dofilter=()=>
     date=`${date[0]} ${date[1]} ${date[2]}`
     localStorage.setItem("date",JSON.stringify({date,quote}))
   }
+
+  function quotes(){
+    fetch('https://node-server-proxy-1.herokuapp.com/quote')
+        .then(res=>res.json())
+        .then(data=>{setquote(data)})
+        savetolocaldate()
+  }
+
   const getfromlocal=()=>{
     if(localStorage.getItem("todos")!==null){
       setTodos( JSON.parse(localStorage.getItem("todos")))
@@ -70,20 +78,14 @@ const dofilter=()=>
       date=date.split(" ",3)
       date=`${date[0]} ${date[1]} ${date[2]}` 
       if(prvdate.date!==date || prvdate.quote.q===undefined)
-        {console.log("callisg Quote")
+        {
         quotes()}
       else
         setquote(prvdate.quote)
     }else
        quotes()
   }
-  function quotes(){
-    console.log("Quote is called")
-    fetch('https://node-server-proxy-1.herokuapp.com/quote')
-        .then(res=>res.json())
-        .then(data=>{setquote(data)})
-        savetolocaldate()
-  }
+  
 
   function weatherapiproxy(){
     navigator.geolocation.getCurrentPosition(position=>{
@@ -170,7 +172,9 @@ const dofilter=()=>
     },[])
 
 
-  useEffect(getfromlocal,[])
+  useEffect(getfromlocal
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    ,[])
   useEffect(savetolocal,[Todos])
   useEffect(dofilter,[Filter,Todos])
   useEffect(weatherapiproxy,[])
