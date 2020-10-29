@@ -13,6 +13,8 @@ const [Filter,setFitler]=useState("all")
 const [Todos,setTodos]=useState([])
 const [Filteredtodo,setFilteredtodo]=useState([])
 const [Weather,setWeather]=useState([])
+const [isdark,setisdark]=useState(false)
+const [isdbg,setisdbg]=useState(false)
 
 const dofilter=()=>
   {
@@ -21,7 +23,6 @@ const dofilter=()=>
         for (let j = 0; j < list.length-1; j++) {
           if(list[j].filterindex>list[j+1].filterindex)
             {
-              console.log(list)
             let temp=list[j]
             list[j]=list[j+1]
             list[j+1]=temp
@@ -124,19 +125,30 @@ const dofilter=()=>
 }
   }
 
+  const enabledark = () =>{
+    setisdark(!isdark)
+    // if(!isdark)
+    // setisdbg(true)
+    // else
+    // setisdbg(false)
+  }
+  
+
+
   useEffect(getfromlocal,[])
   useEffect(savetolocal,[Todos])
   useEffect(dofilter,[Filter,Todos])
   useEffect(weatherapiproxy,[])
 
   return (
-    <div className="App">
+    <div className={`App ${isdark?"bodyDark":""}`}>
 
       <Top
       Weather = {Weather}
       />
 
       <header>
+        <button className="darkmodebtn" onClick={enabledark}><i className="fa fa-adjust"></i></button>
         <h1>To Do List</h1>
         <p className="weather">{Weather.icon==="-"?"Allow location or check internet":`${Weather.icon} ${Weather.title} at ${Weather.temp}℃ in ${Weather.city}`}</p>
       </header>
@@ -147,6 +159,7 @@ const dofilter=()=>
         setTodos={setTodos}
         Todos={Todos}
         setFitler={setFitler}
+        Filter={Filter}
       />
       <DragDropContext onDragEnd={ondragend}>
         <Droppable droppableId="1">

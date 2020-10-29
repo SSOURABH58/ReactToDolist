@@ -2,18 +2,73 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    border: 0;
+    opacity: 100%;
 }
 
 body,.App,.root{
     background-image: linear-gradient(to right,#7396FF,#E773FF);
     font-size:16px;
     font-family: 'Poppins', sans-serif;
-    color:white;
+    color:var(--primcolorText);
     /* height: 100vh; */
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+
+    
+    /* --primcolorAbtn:#7396FF;
+    --primcolorB:#E773FF;
+    --primcolorText:white;
+    --primcolorFream:white; */
 }
+.App{
+    --primcolorA:#7396FF;
+    --primcolorAbtn:#7396FF;
+    --primcolorB:#E773FF;
+    --primcolorText:white;
+    --primcolorFream:white;
+    --primcolorAbtnlite:#7396ffb6;
+    --darkmodbtn:#35409e;
+    
+    /* opacity: 0%; */
+}
+.bodyDark{
+    --primcolorA:rgb(0, 32, 128);
+    --primcolorAbtn:#4178bb;
+    --primcolorB:rgb(106, 0, 128);
+    --primcolorText:rgb(162, 167, 189);
+    --primcolorFream:#17191a;
+    --primcolorAbtnlite:#4178bbb4;
+    --darkmodbtn:#8facbb;
+    background-image: linear-gradient(to right,var(--primcolorA),var(--primcolorB));
+}
+
+
+.darkmodebtn{
+    background-color:var(--darkmodbtn) ;
+    color:var(--primcolorFream);
+    cursor: pointer;
+    
+    padding: 5px;
+    border-radius: 100%;
+    
+    align-items: center;
+    justify-content: center;
+    margin: 8px;
+    margin-right: 15px;
+    align-self: flex-end;
+    justify-self: top;
+
+    display: flex;
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    height: 60px;
+    width: 60px;
+    font-size: 3rem;
+}
+
 
 header h1{
     font-size: 4rem;
@@ -61,6 +116,9 @@ header,.inputtabe,form{
     margin: 1.5% 0;
 
 }
+.inputbox{
+    background-color: var(--primcolorFream);
+}
 
 
 .weather{
@@ -74,19 +132,27 @@ header,.inputtabe,form{
 }
 
 .filter{
-    margin: 0 10px;
+    margin-left:10px;
 }
 
 .addtask,.filter{
-    background-color:  white;
-    color:#7396FF;
+    background-color:  var(--primcolorFream);
+    color:var(--primcolorAbtn);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: hover 0.3s ease;
 }
 
 .addtask:hover,.filter:hover{
-    background-color: #7396FF;
-    color:white;
+    background-color: var(--primcolorAbtn);
+    color:var(--primcolorFream);
+}
+.filter{
+    border-radius: 1.5rem 0 0 1.5rem;
+}
+.trashall{
+    margin-left:0;
+    border-radius: 0 1.5rem 1.5rem 0;
+    padding: 10.2px;
 }
 
 .tasks{
@@ -104,7 +170,7 @@ header,.inputtabe,form{
     justify-content:space-between;
     min-width: 35%;
     margin: .2rem;
-    background-color: white;
+    background-color: var(--primcolorFream);
     min-width: 30%;
     max-width: 80%;
 }
@@ -122,11 +188,17 @@ header,.inputtabe,form{
         display: none;
     }
     header{
-        margin-top:10%;
+        margin-top:0;
         flex-direction: column;
     }
     .weather{
         display: block;
+    }
+    .darkmodebtn{
+        position: static;
+        height: 35px;
+        width: 35px;
+        font-size: 1.5rem;
     }
     
 }
@@ -135,10 +207,10 @@ header,.inputtabe,form{
         min-width: 65%;
     }
     .filter{
-        margin: 10px;
+        margin: 10px 0;
     }
     header{
-        margin-top:10%;
+        margin-top:0;
         flex-direction: column;
     }
     .weather{
@@ -150,8 +222,7 @@ header,.inputtabe,form{
     .timetab{
         display: none;
     }
-    .draghand:hover{
-    }
+   
     
     
 }
@@ -163,21 +234,21 @@ header,.inputtabe,form{
 }
 
 .taskcheak,.tasktrash{
-    background-color:white;
-    color:#7396FF ;
+    background-color:var(--primcolorFream);
+    color:var(--primcolorAbtn) ;
     cursor: pointer;
 }
 .tasktrash{
     margin-right: 5px;
 }
 .taskcheak:hover,.tasktrash:hover{
-    background-color:#7396FF;
-    color: white;
+    background-color:var(--primcolorAbtn);
+    color: var(--primcolorFream);
 }
 
 .tasklable{
     list-style: none;
-    color:#7396FF;
+    color:var(--primcolorAbtn);
     flex-grow: 1;
     padding-left: 0 10px;
     white-space: nowrap;
@@ -201,7 +272,7 @@ i{
     opacity: 0.7;
 }
 .cheaked li{
-    color: #E773FF;
+    color: var(--primcolorB);
 }
 .taskcont{
     min-height: 1rem;
@@ -222,7 +293,7 @@ i{
     border-radius: 0 1.5rem 1.5rem 0;
 }
 
-.taskcont,.filter{
+.taskcont{
     border-radius: 1.5rem;
 }
 
@@ -240,8 +311,8 @@ footer p{
     align-items: center;
 }
 .circlenum{
-    background-color: #7396ff7a;
-    color: white;
+    background-color:var(--primcolorAbtnlite);
+    color: var(--primcolorFream);
     text-align: center;
     font-size: 1rem;
     border-radius: 100%;
@@ -254,7 +325,7 @@ footer p{
 }
 
 .draghand{
-    color: #7396fffd;
+    color: var(--primcolorAbtn);
     padding-left: 5px;
     cursor: move;
 }
