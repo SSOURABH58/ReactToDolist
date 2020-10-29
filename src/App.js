@@ -14,7 +14,6 @@ const [Todos,setTodos]=useState([])
 const [Filteredtodo,setFilteredtodo]=useState([])
 const [Weather,setWeather]=useState([])
 const [isdark,setisdark]=useState(false)
-const [isdbg,setisdbg]=useState(false)
 
 const dofilter=()=>
   {
