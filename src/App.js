@@ -98,7 +98,7 @@ function projectreduser(Projects,action){
         return action.payload.projects
 
       case ACTION.RECOVERTODOS:
-        return Projects.map(project=>project.id===PRESETS.PROJECTS_MYTODOS.id?{project,Todos:action.payload.todos}:project)
+        return Projects.map(project=>project.id===PRESETS.PROJECTS_MYTODOS.id?{...project,Todos:action.payload.todos}:project)
 
     default:
       return Projects;
