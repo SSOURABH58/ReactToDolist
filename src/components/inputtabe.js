@@ -27,21 +27,11 @@ function Inputtabe({Inputtext,setInputtext,setFitler,Filter,isProjectTabToggle,s
         setFitler(filterevent.target.value);
     }
 
-    // const trashall=()=>{
-    //     switch (Filter) {
-    //         case "completed":
-    //             setTodos(Todos.filter(todo=>!todo.ischeaked))
-    //             break;
-    //         case "uncompleted":
-    //             setTodos(Todos.filter(todo=>todo.ischeaked))
-    //             break;
-        
-    //         default:
-    //             setTodos([])
-    //             break;
-    //     }
-    // }
-    
+    const trashall=()=>{
+        isProjectTabToggle?
+        dispatchProjects({type:ACTION.TRASH_ALL_PROJECTS,payload:{filter:Filter}})
+        :dispatchProjects({type:ACTION.TRASH_ALL_TODOS,payload:{filter:Filter,id:Openprojectlable.id}})
+    }
 
     return(
         <div className="inputtabe">
@@ -56,7 +46,7 @@ function Inputtabe({Inputtext,setInputtext,setFitler,Filter,isProjectTabToggle,s
                 <option value={ACTION.FILTER_COMPLETED}>Completed</option>
                 <option value={ACTION.FILTER_UNCOMPLETED}>Uncompleted</option>
             </select>
-            <button className="trashall filter" ><i className="fa fa-trash"></i></button>
+            <button className="trashall filter" onClick={trashall} ><i className="fa fa-trash"></i></button>
             </div>
         </div>
     );

@@ -4,7 +4,7 @@ import { Draggable } from 'react-beautiful-dnd';
 import {ACTION} from '../App'
 
 // reacr function =-------------------------------------
-function ProjectTab({project,dispatchProjects,index,openproject,isProjectTabToggle}){
+function ProjectTab({project,dispatchProjects,index,isProjectTabToggle,setisProjectTabToggle,setOpenprojectlable,setSelectedProject}){
 
   //functions =--------------------------------------------------
     const trashproject=()=>{
@@ -22,7 +22,9 @@ function ProjectTab({project,dispatchProjects,index,openproject,isProjectTabTogg
     }
 
     const selectproject=()=>{
-      openproject(project.id)
+      setOpenprojectlable({lable:project.lable,id:project.id})
+      setSelectedProject(project.id)
+      setisProjectTabToggle(!isProjectTabToggle)
     }
 
     return(
@@ -48,7 +50,7 @@ function ProjectTab({project,dispatchProjects,index,openproject,isProjectTabTogg
 // actule contaner =----------------------------------------------------
         id={project.id} className={`taskcont ${project.istrashed?"deleted":""} ${project.ischeaked?"cheaked":""}`}>
             <div className="draghand" {...provided.dragHandleProps} ><i className="fa fa-hand-rock-o draghand"></i></div>
-            <li className="tasklable cleckable" onClick={isProjectTabToggle?selectproject:""}>
+            <li className="tasklable cleckable" onClick={selectproject}>
                 {project.lable}
             <p className={project.dupeid&&!project.istrashed?"circlenum":"dnone"}>{project.dupeid}</p>
             </li>

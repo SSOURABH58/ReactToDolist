@@ -15,11 +15,18 @@ export const ACTION = {
   FILTER_ALL:"all",
   FILTER_COMPLETED:"completed",
   FILTER_UNCOMPLETED:"uncompleted",
-  FILTER_SET_PROJECT:"setproject",
   ADD_TODO : "addtodo",
   TRASH_TODO:"trashtodo",
   CHEAK_TODO:"cheaktodo",
-
+  ON_PROJECT_DRAGE:"onprojectdrage",
+  ON_TODO_DRAGE:"ontododrage",
+  TRASH_ALL_PROJECTS:"trashallprojects",
+  TRASH_ALL_TODOS:"trashalltodos",
+  PROJECTS:"projects",
+  DATE:"date",
+  DARK:"dark",
+  GETPROJECTS:"getprojects",
+  RECOVERTODOS:"recovrtodos"
 }
 
 const PRESETS = {
@@ -44,6 +51,48 @@ function projectreduser(Projects,action){
       return Projects.map(project=>{if(project.id===action.payload.project){return {...project,Todos:project.Todos.filter(todo=>todo.id!==action.payload.id)}}else{return project}})
     case ACTION.CHEAK_TODO:
       return Projects.map(project=>{if(project.id===action.payload.project){return {...project,Todos:project.Todos.map(todo=>{if(todo.id===action.payload.id){return{...todo,ischeaked:!project.ischeaked}}return todo})}}else{return project}})
+    
+    case ACTION.ON_PROJECT_DRAGE:
+      {switch(action.payload.filter){
+        case ACTION.FILTER_ALL:
+          return [...updatelistsequence(Projects,action.payload.sindex,action.payload.dindex)]
+        default:
+          return [...updatefilterindex(Projects,action.payload.filter,action.payload.sindex,action.payload.dindex)]
+      }}
+    case ACTION.ON_TODO_DRAGE:
+      {let temp = Projects.filter(project=>project.id===action.payload.id)
+      temp = {...temp[0]}
+      switch(action.payload.filter){
+        case ACTION.FILTER_ALL:
+          return Projects.map(project=>project.id===action.payload.id?{...project,Todos:[...updatelistsequence(temp.Todos,action.payload.sindex,action.payload.dindex)]}:project) 
+        default:
+          return Projects.map(project=>project.id===action.payload.id?{...project,Todos:[...updatefilterindex(temp.Todos,action.payload.filter,action.payload.sindex,action.payload.dindex)]}:project)
+      }}
+
+    case ACTION.TRASH_ALL_PROJECTS:
+      {switch (action.payload.filter) {
+        case ACTION.FILTER_COMPLETED:
+          return Projects.filter(item=>!item.ischeaked)
+        case ACTION.FILTER_UNCOMPLETED:
+          return Projects.filter(item=>item.ischeaked)
+        default:
+          return []
+      }}
+    case ACTION.TRASH_ALL_TODOS:
+      {switch (action.payload.filter) {
+        case ACTION.FILTER_COMPLETED:
+          return Projects.map(project=>project.id===action.payload.id?{...project,Todos:project.Todos.filter(item=>!item.ischeaked)}:project) 
+        case ACTION.FILTER_UNCOMPLETED:
+          return Projects.map(project=>project.id===action.payload.id?{...project,Todos:project.Todos.filter(item=>item.ischeaked)}:project) 
+        default:
+          return Projects.map(project=>project.id===action.payload.id?{...project,Todos:[]}:project) 
+      }}
+    
+      case ACTION.GETPROJECTS:
+        return action.payload.projects
+
+      case ACTION.RECOVERTODOS:
+        return Projects.map(project=>project.id===PRESETS.PROJECTS_MYTODOS.id?{project,Todos:action.payload.todos}:project)
 
     default:
       return Projects;
@@ -61,6 +110,29 @@ const newTodo=(lable,id,Projects)=>{
   const dupeid=Todos.filter(todo=>todo.lable===lable).length
   return {id:Date.now(),lable:lable,ischeaked:false,istrashed:false,dupeid:dupeid,filterindex:Projects.length,projectid:id}
 }
+const updatelistsequence=(list,sindex,dindex)=>{
+  const temp = list.splice(sindex,1)
+  list.splice(dindex,0,temp[0])
+  return list
+  }
+const updatefilterindex=(list,filter,sindex,dindex)=>{
+  let flist
+  switch (filter) {
+    case ACTION.FILTER_COMPLETED:
+      flist=list.filter(item=>item.ischeaked)
+      break;
+    case ACTION.FILTER_UNCOMPLETED:
+      flist=list.filter(item=>!item.ischeaked)
+      break;
+    default:flist=list
+      break;
+  }
+
+  const temp = flist.splice(sindex,1)
+  flist.splice(dindex,0,temp[0])
+  list.map(todo=>todo.filterindex=flist.indexOf(todo))
+  return list
+  }  
 
 // to heandle Filterlist state =------------------------
 const filteredlistreduser=(Filteredlist,action)=>{
@@ -69,45 +141,42 @@ const filteredlistreduser=(Filteredlist,action)=>{
       return action.payload.list.filter(item=>item.ischeaked).sort((a,b)=>a.filterindex-b.filterindex)
     case ACTION.FILTER_UNCOMPLETED:
       return action.payload.list.filter(item=>!item.ischeaked).sort((a,b)=>a.filterindex-b.filterindex)
-    case ACTION.FILTER_SET_PROJECT:
-      return action.payload.list
   
     default:
       return action.payload.list
   }
 }
 
-
 //react App function =------------------------------------
 
 function App() {
 
+const [Projects,dispatchProjects] = useReducer(projectreduser,[PRESETS.PROJECTS_MYTODOS])
+const [Filteredlist,dispatchFilteredlist]=useReducer(filteredlistreduser,[])
+
+const [SelectedProject,setSelectedProject]=useState(11111)
 const [Inputtext,setInputtext]=useState("")
 const [Filter,setFitler]=useState("all")
-const [Todos,setTodos]=useState([])
-const [Filteredtodo,setFilteredtodo]=useState([])
 const [Weather,setWeather]=useState([])
 const [isdark,setisdark]=useState(false)
 const [quote,setquote]=useState({})
 const [isProjectTabToggle,setisProjectTabToggle]=useState(false)
-const [SelectedProject,setSelectedProject]=useState(11111)
-const [Openprojectlable,setOpenprojectlable]=useState({})
+const [Openprojectlable,setOpenprojectlable]=useState(PRESETS.PROJECTS_MYTODOS)
 
-const [Projects,dispatchProjects] = useReducer(projectreduser,[PRESETS.PROJECTS_MYTODOS])
-const [Filteredlist,dispatchFilteredlist]=useReducer(filteredlistreduser,[])
+
 
 
   const savetolocal=()=>{
-    localStorage.setItem("todos",JSON.stringify(Todos))
+    localStorage.setItem(ACTION.PROJECTS,JSON.stringify(Projects))
   }
   const savetolocaldark=()=>{
-    localStorage.setItem("dark",JSON.stringify(!isdark))
+    localStorage.setItem(ACTION.DARK,JSON.stringify(!isdark))
   }
   const savetolocaldate=()=>{
     let date=Date()
     date=date.split(" ",3)
     date=`${date[0]} ${date[1]} ${date[2]}`
-    localStorage.setItem("date",JSON.stringify({date,quote}))
+    localStorage.setItem(ACTION.DATE,JSON.stringify({date,quote}))
   }
 
   
@@ -118,9 +187,12 @@ const [Filteredlist,dispatchFilteredlist]=useReducer(filteredlistreduser,[])
           .then(res=>res.json())
           .then(data=>{setquote(data)})
     }
+    if(localStorage.getItem(ACTION.PROJECTS)!==null){
+      dispatchProjects({type:ACTION.GETPROJECTS,payload:{projects:JSON.parse(localStorage.getItem(ACTION.PROJECTS))}})
+    }
     if(localStorage.getItem("todos")!==null){
-      setTodos( JSON.parse(localStorage.getItem("todos")))
-      setFilteredtodo(JSON.parse(localStorage.getItem("todos")))
+      dispatchProjects({type:ACTION.RECOVERTODOS,payload:{todos:JSON.parse(localStorage.getItem("todos"))}})
+      localStorage.clear("todos")
     }
     if(localStorage.getItem("dark")!==null){
       setisdark(JSON.parse(localStorage.getItem("dark")))
@@ -138,7 +210,6 @@ const [Filteredlist,dispatchFilteredlist]=useReducer(filteredlistreduser,[])
     }else
        quotes()
   }
-  
 
   function weatherapiproxy(){
     navigator.geolocation.getCurrentPosition(position=>{
@@ -182,34 +253,16 @@ const [Filteredlist,dispatchFilteredlist]=useReducer(filteredlistreduser,[])
     })
   }
 
-  const updatelist=(list,sindex,dindex)=>{
-  const temp = list.splice(sindex,1)
-  list.splice(dindex,0,temp[0])
-  return list
-  }
-
-  const updatefilterindex=(list,flist,sindex,dindex)=>{
-    const temp = flist.splice(sindex,1)
-    flist.splice(dindex,0,temp[0])
-    list.map(todo=>todo.filterindex=flist.indexOf(todo))
-    return list
-    }
-
-
  const ondragend=(result)=>{
   if(result.destination===null)
   return
   else if(result.source.index===result.destination.index)
   return
   else{
-    switch(Filter){
-      case "all":setTodos([...updatelist(Todos,result.source.index,result.destination.index)])
-        break
-      default:setTodos([...updatefilterindex(Todos,Filteredtodo,result.source.index,result.destination.index)]) 
-        break
+    isProjectTabToggle?
+    dispatchProjects({type:ACTION.ON_PROJECT_DRAGE,payload:{filter:Filter,sindex:result.source.index,dindex:result.destination.index}})
+    :dispatchProjects({type:ACTION.ON_TODO_DRAGE,payload:{id:SelectedProject,filter:Filter,sindex:result.source.index,dindex:result.destination.index}})
     }
-  
-}
   }
 
   const enabledark = () =>{
@@ -217,15 +270,6 @@ const [Filteredlist,dispatchFilteredlist]=useReducer(filteredlistreduser,[])
     savetolocaldark()
   }
 
-  const openproject=(id)=>{
-      setSelectedProject(id)
-      let temp = Projects.filter(project=>project.id===SelectedProject)
-      temp = {...temp[0]}
-      dispatchFilteredlist({type:ACTION.FILTER_SET_PROJECT,payload:{list:temp.Todos}})
-      setOpenprojectlable({lable:temp.lable,id:SelectedProject})
-      setisProjectTabToggle(false)
-
-  }
 
 
 
@@ -235,13 +279,19 @@ const [Filteredlist,dispatchFilteredlist]=useReducer(filteredlistreduser,[])
     },[])
 
 
-  // useEffect(getfromlocal,[])
-  // useEffect(savetolocal,[Todos])
-  // useEffect(dofilter,[Filter,Todos])
-  // useEffect(weatherapiproxy,[])
-  // useEffect(savetolocaldate,[quote])
-  useEffect(()=>isProjectTabToggle?dispatchFilteredlist({type:Filter,payload:{list:Projects}}):openproject(SelectedProject),[isProjectTabToggle])
-  useEffect(()=>isProjectTabToggle?dispatchFilteredlist({type:Filter,payload:{list:Projects}}):openproject(SelectedProject),[Filter,Projects]) 
+  useEffect(getfromlocal,[])
+  useEffect(savetolocal,[Projects])
+  useEffect(weatherapiproxy,[])
+  useEffect(savetolocaldate,[quote])
+  useEffect(()=>{
+    let temp = Projects.filter(project=>project.id===SelectedProject)
+      temp = {...temp[0]}
+      if(isProjectTabToggle)
+        return dispatchFilteredlist({type:Filter,payload:{list:Projects}})
+      else
+        return dispatchFilteredlist({type:Filter,payload:{list:temp.Todos}})
+  },[Projects,Filter,SelectedProject,isProjectTabToggle])
+
 
 
   return (
@@ -261,8 +311,6 @@ const [Filteredlist,dispatchFilteredlist]=useReducer(filteredlistreduser,[])
       <Inputtabe
         Inputtext ={Inputtext}
         setInputtext={setInputtext}
-        setTodos={setTodos}
-        Todos={Todos}
         setFitler={setFitler}
         Filter={Filter}
         setisProjectTabToggle={setisProjectTabToggle}
@@ -277,15 +325,17 @@ const [Filteredlist,dispatchFilteredlist]=useReducer(filteredlistreduser,[])
             ref={provided.innerRef}
             {...provided.droppableProps}
             className="tasks"
-          > {console.log({Filteredlist})}
+          >
             {Filteredlist.map((item,i)=>
                 <ProjectTab
                 key={item.id}
                 project={item}
                 dispatchProjects = {dispatchProjects}
                 index={i}
-                openproject={openproject}
                 isProjectTabToggle={isProjectTabToggle}
+                setisProjectTabToggle={setisProjectTabToggle}
+                setOpenprojectlable={setOpenprojectlable}
+                setSelectedProject={setSelectedProject}
                 />
             ) }
            {provided.placeholder}
