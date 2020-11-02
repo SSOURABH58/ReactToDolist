@@ -44,7 +44,7 @@ function Tasks({setTodos,lable,id,ischeaked,Todos,istrashed,dupeid,index}){
         
         id={id} onTransitionEnd={transend} className={`taskcont ${istrashed?"deleted":""} ${ischeaked?"cheaked":""}`}>
             <div className="draghand" {...provided.dragHandleProps} ><i className="fa fa-hand-rock-o draghand"></i></div>
-            <li className="tasklable">
+            <li className="tasklable cleckable" onClick={()=>console.log("clocking")}>
                 {lable}
             <p className={dupeid&&!istrashed?"circlenum":"dnone"}>{dupeid}</p>
             {/*displaynone  */}

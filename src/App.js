@@ -1,13 +1,87 @@
-import React,{useState,useEffect} from 'react'
+import React,{useState,useEffect, useReducer} from 'react'
 import './App.css';
 import { DragDropContext,Droppable } from 'react-beautiful-dnd';
 
 //components 
 import Inputtabe from './components/inputtabe'
-import Tasks from './components/tasks'
 import Top from './components/top'
+import ProjectTab from './components/projecttab'
+
+// frequantly used strings =-------------------
+export const ACTION = {
+  ADD_PROJECT : "addproject",
+  TRASH_PROJECT:"trashproject",
+  CHEAK_PROJECT:"cheakproject",
+  FILTER_ALL:"all",
+  FILTER_COMPLETED:"completed",
+  FILTER_UNCOMPLETED:"uncompleted",
+  FILTER_SET_PROJECT:"setproject",
+  ADD_TODO : "addtodo",
+  TRASH_TODO:"trashtodo",
+  CHEAK_TODO:"cheaktodo",
+
+}
+
+const PRESETS = {
+  PROJECTS_MYTODOS : {id:11111,lable:"My ToDo's",ischeaked:false,istrashed:false,dupeid:0,filterindex:0,Todos:[]}
+}
+
+// functions =-----------------------------------
+
+// to hendal Projects state =------------------------------
+function projectreduser(Projects,action){
+  switch (action.type) {
+    case ACTION.ADD_PROJECT:
+      return [...Projects,newProject(action.payload.lable,Projects)];
+    case ACTION.TRASH_PROJECT:
+      return Projects.filter(project=>project.id!==action.payload.id);
+    case ACTION.CHEAK_PROJECT:
+      return Projects.map(project=>{if(project.id===action.payload.id){return {...project,ischeaked:!project.ischeaked}}return project})
+
+    case ACTION.ADD_TODO:
+      return Projects.map(project=>{if(project.id===action.payload.id){return{...project,Todos:[...project.Todos,newTodo(action.payload.lable,action.payload.id,Projects)]}}else{return project}})
+    case ACTION.TRASH_TODO:
+      return Projects.map(project=>{if(project.id===action.payload.project){return {...project,Todos:project.Todos.filter(todo=>todo.id!==action.payload.id)}}else{return project}})
+    case ACTION.CHEAK_TODO:
+      return Projects.map(project=>{if(project.id===action.payload.project){return {...project,Todos:project.Todos.map(todo=>{if(todo.id===action.payload.id){return{...todo,ischeaked:!project.ischeaked}}return todo})}}else{return project}})
+
+    default:
+      return Projects;
+  }
+}
+
+const newProject=(lable,Projects)=>{
+  const dupeid=Projects.filter(project=>project.lable===lable).length
+  return {id:Date.now(),lable:lable,ischeaked:false,istrashed:false,dupeid:dupeid,filterindex:Projects.length,Todos:[]}
+}
+const newTodo=(lable,id,Projects)=>{
+  let temp = Projects.filter(project=>project.id===id)
+  temp = {...temp[0]}
+  const Todos=temp.Todos
+  const dupeid=Todos.filter(todo=>todo.lable===lable).length
+  return {id:Date.now(),lable:lable,ischeaked:false,istrashed:false,dupeid:dupeid,filterindex:Projects.length,projectid:id}
+}
+
+// to heandle Filterlist state =------------------------
+const filteredlistreduser=(Filteredlist,action)=>{
+  switch (action.type) {
+    case ACTION.FILTER_COMPLETED:
+      return action.payload.list.filter(item=>item.ischeaked).sort((a,b)=>a.filterindex-b.filterindex)
+    case ACTION.FILTER_UNCOMPLETED:
+      return action.payload.list.filter(item=>!item.ischeaked).sort((a,b)=>a.filterindex-b.filterindex)
+    case ACTION.FILTER_SET_PROJECT:
+      return action.payload.list
+  
+    default:
+      return action.payload.list
+  }
+}
+
+
+//react App function =------------------------------------
 
 function App() {
+
 const [Inputtext,setInputtext]=useState("")
 const [Filter,setFitler]=useState("all")
 const [Todos,setTodos]=useState([])
@@ -15,33 +89,12 @@ const [Filteredtodo,setFilteredtodo]=useState([])
 const [Weather,setWeather]=useState([])
 const [isdark,setisdark]=useState(false)
 const [quote,setquote]=useState({})
+const [isProjectTabToggle,setisProjectTabToggle]=useState(false)
+const [SelectedProject,setSelectedProject]=useState(11111)
+const [Openprojectlable,setOpenprojectlable]=useState({})
 
-const dofilter=()=>
-  {
-    const arangefilter=(list)=>{
-      for (let i = 0; i < list.length; i++) {
-        for (let j = 0; j < list.length-1; j++) {
-          if(list[j].filterindex>list[j+1].filterindex)
-            {
-            let temp=list[j]
-            list[j]=list[j+1]
-            list[j+1]=temp
-            }
-          
-        }
-      }
-      return list
-    }
-    switch (Filter) {
-      case "completed":setFilteredtodo(arangefilter(Todos.filter(todo=>todo.ischeaked===true)))
-        break;
-      case "uncompleted":setFilteredtodo(arangefilter(Todos.filter(todo=>todo.ischeaked===false)))
-        break;
-    
-      default:setFilteredtodo(Todos)
-        break;
-    }
-  }
+const [Projects,dispatchProjects] = useReducer(projectreduser,[PRESETS.PROJECTS_MYTODOS])
+const [Filteredlist,dispatchFilteredlist]=useReducer(filteredlistreduser,[])
 
 
   const savetolocal=()=>{
@@ -164,6 +217,16 @@ const dofilter=()=>
     savetolocaldark()
   }
 
+  const openproject=(id)=>{
+      setSelectedProject(id)
+      let temp = Projects.filter(project=>project.id===SelectedProject)
+      temp = {...temp[0]}
+      dispatchFilteredlist({type:ACTION.FILTER_SET_PROJECT,payload:{list:temp.Todos}})
+      setOpenprojectlable({lable:temp.lable,id:SelectedProject})
+      setisProjectTabToggle(false)
+
+  }
+
 
 
   useEffect(()=>{
@@ -172,13 +235,13 @@ const dofilter=()=>
     },[])
 
 
-  useEffect(getfromlocal
-   
-    ,[])
-  useEffect(savetolocal,[Todos])
-  useEffect(dofilter,[Filter,Todos])
-  useEffect(weatherapiproxy,[])
-  useEffect(savetolocaldate,[quote])
+  // useEffect(getfromlocal,[])
+  // useEffect(savetolocal,[Todos])
+  // useEffect(dofilter,[Filter,Todos])
+  // useEffect(weatherapiproxy,[])
+  // useEffect(savetolocaldate,[quote])
+  useEffect(()=>isProjectTabToggle?dispatchFilteredlist({type:Filter,payload:{list:Projects}}):openproject(SelectedProject),[isProjectTabToggle])
+  useEffect(()=>isProjectTabToggle?dispatchFilteredlist({type:Filter,payload:{list:Projects}}):openproject(SelectedProject),[Filter,Projects]) 
 
 
   return (
@@ -202,6 +265,10 @@ const dofilter=()=>
         Todos={Todos}
         setFitler={setFitler}
         Filter={Filter}
+        setisProjectTabToggle={setisProjectTabToggle}
+        isProjectTabToggle={isProjectTabToggle}
+        dispatchProjects={dispatchProjects}
+        Openprojectlable={Openprojectlable}
       />
       <DragDropContext onDragEnd={ondragend}>
         <Droppable droppableId="1">
@@ -210,21 +277,16 @@ const dofilter=()=>
             ref={provided.innerRef}
             {...provided.droppableProps}
             className="tasks"
-          >
-            {Filteredtodo.map((todo,i)=>
-              
-                <Tasks 
-                key={todo.id}
+          > {console.log({Filteredlist})}
+            {Filteredlist.map((item,i)=>
+                <ProjectTab
+                key={item.id}
+                project={item}
+                dispatchProjects = {dispatchProjects}
                 index={i}
-                setTodos={setTodos}
-                Todos={Todos}
-                lable={todo.lable}
-                id={todo.id}  
-                ischeaked={todo.ischeaked}
-                istrashed={todo.istrashed}
-                dupeid={todo.dupeid}
+                openproject={openproject}
+                isProjectTabToggle={isProjectTabToggle}
                 />
-                
             ) }
            {provided.placeholder}
           </ul>
