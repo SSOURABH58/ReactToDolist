@@ -50,7 +50,13 @@ function projectreduser(Projects,action){
     case ACTION.TRASH_TODO:
       return Projects.map(project=>{if(project.id===action.payload.project){return {...project,Todos:project.Todos.filter(todo=>todo.id!==action.payload.id)}}else{return project}})
     case ACTION.CHEAK_TODO:
-      return Projects.map(project=>{if(project.id===action.payload.project){return {...project,Todos:project.Todos.map(todo=>{if(todo.id===action.payload.id){return{...todo,ischeaked:!project.ischeaked}}return todo})}}else{return project}})
+      return Projects.map(project=>{
+        if(project.id===action.payload.project){
+          return {...project,Todos:project.Todos.map(todo=>{
+            if(todo.id===action.payload.id){
+              return{...todo,ischeaked:!todo.ischeaked}}
+            else {return todo}})}}
+        else{return project}})
     
     case ACTION.ON_PROJECT_DRAGE:
       {switch(action.payload.filter){
@@ -286,7 +292,15 @@ const [Openprojectlable,setOpenprojectlable]=useState(PRESETS.PROJECTS_MYTODOS)
   useEffect(()=>{
     let temp = Projects.filter(project=>project.id===SelectedProject)
       temp = {...temp[0]}
-      if(isProjectTabToggle)
+    if(temp.Todos===undefined)
+      { temp = Projects[0]
+        if(Projects[0]===undefined){
+          setisProjectTabToggle(true)
+        }else
+        {setOpenprojectlable({lable:temp.lable,id:temp.id})
+        setSelectedProject(temp.id)}
+      }
+      if(isProjectTabToggle||temp===undefined)
         return dispatchFilteredlist({type:Filter,payload:{list:Projects}})
       else
         return dispatchFilteredlist({type:Filter,payload:{list:temp.Todos}})
