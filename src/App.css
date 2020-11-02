@@ -28,6 +28,7 @@ body,.App,.root{
     --primcolorText:white;
     --primcolorFream:white;
     --primcolorAbtnlite:#7396ffb6;
+    --primebasecik:#17191a;
     --darkmodbtn:#35409e;
     
     /* opacity: 0%; */
@@ -40,6 +41,7 @@ body,.App,.root{
     --primcolorFream:#17191a;
     --primcolorAbtnlite:#4178bbb4;
     --darkmodbtn:#8facbb;
+    --primebasecik:rgb(232, 231, 233);
     background-image: linear-gradient(to right,var(--primcolorA),var(--primcolorB));
 }
 
@@ -112,7 +114,7 @@ header,.inputtabe,form{
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    margin: 1.5% 0;
+    margin: 5px 0;
 
 }
 header{
@@ -120,7 +122,11 @@ header{
 }
 .inputbox{
     background-color: var(--primcolorFream);
-    color:var(--primcolorAbtn)
+    color: var(--primcolorAbtn);
+}
+::placeholder{
+    opacity: .8;
+    color: var(--primebasecik);
 }
 
 
@@ -213,7 +219,7 @@ header{
         min-width: 65%;
     }
     .filter{
-        margin: 10px 0;
+        margin: 5px 0;
     }
     header{
         margin-top:0;
@@ -357,3 +363,12 @@ footer p{
     max-width: 98%;
 
 }
+
+.openproject{
+    border-radius: 0;
+}
+
+.cleckable{
+    cursor: pointer;
+}
+

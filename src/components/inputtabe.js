@@ -1,55 +1,53 @@
 import React from 'react'
 
-function Inputtabe({Inputtext,setInputtext,setTodos,Todos,setFitler,Filter}){
+import {ACTION} from '../App'
+
+
+function Inputtabe({Inputtext,setInputtext,setFitler,Filter,isProjectTabToggle,setisProjectTabToggle,dispatchProjects,Openprojectlable}){
+
 
     function getinput(inputevent){
         setInputtext(inputevent.target.value)
     }
 
-    function settask (clickevent){
-        clickevent.preventDefault()
-        const date=new Date()
-        const dupeid=Todos.filter(todo=>todo.lable===Inputtext).length
-        const todo = {id:date.getTime(),lable:Inputtext,ischeaked:false,istrashed:false,dupeid:dupeid,filterindex:Todos.length}
-        setTodos([...Todos,todo])
+    const addprojects=(e)=>{
+        e.preventDefault();
+        isProjectTabToggle?
+        dispatchProjects({type:ACTION.ADD_PROJECT,payload:{lable:Inputtext}})
+        :dispatchProjects({type:ACTION.ADD_TODO,payload:{lable:Inputtext,id:Openprojectlable.id}})
         setInputtext("")
     }
 
+    const openprojects=e=>{
+        e.preventDefault()
+        setisProjectTabToggle(!isProjectTabToggle)
+    }
+
     const setfilter=(filterevent)=>{
-        setFitler(filterevent.target.value)
+        setFitler(filterevent.target.value);
     }
 
     const trashall=()=>{
-        switch (Filter) {
-            case "completed":
-                setTodos(Todos.filter(todo=>!todo.ischeaked))
-                break;
-            case "uncompleted":
-                setTodos(Todos.filter(todo=>todo.ischeaked))
-                break;
-        
-            default:
-                setTodos([])
-                break;
-        }
+        isProjectTabToggle?
+        dispatchProjects({type:ACTION.TRASH_ALL_PROJECTS,payload:{filter:Filter}})
+        :dispatchProjects({type:ACTION.TRASH_ALL_TODOS,payload:{filter:Filter,id:Openprojectlable.id}})
     }
-    
 
     return(
         <div className="inputtabe">
             <form action="#">
-                <input onChange={getinput} value={Inputtext} type="text" className="inputbox"/>
-                <button onClick={settask} className="addtask" type="submit"><i className="fa fa-plus-square"></i></button>
+                <input onChange={getinput} value={Inputtext} type="text" className="inputbox" placeholder={isProjectTabToggle?"Add a New Peoject ..":`Add to ${Openprojectlable.lable}`}/>
+                <button onClick={openprojects} className="addtask openproject" ><i className="fa fa-angle-down"></i></button>
+                <button onClick={addprojects} className="addtask" type="submit"><i className="fa fa-plus-square"></i></button>
             </form>
             <div className="filtercont">
             <select onChange={setfilter} name="filter" className="filter">
-                <option value="all">All</option>
-                <option value="completed">Completed</option>
-                <option value="uncompleted">Uncompleted</option>
+                <option value={ACTION.FILTER_ALL}>All</option>
+                <option value={ACTION.FILTER_COMPLETED}>Completed</option>
+                <option value={ACTION.FILTER_UNCOMPLETED}>Uncompleted</option>
             </select>
-            <button className="trashall filter" onClick={trashall}><i className="fa fa-trash"></i></button>
+            <button className="trashall filter" onClick={trashall} ><i className="fa fa-trash"></i></button>
             </div>
-            
         </div>
     );
 }
