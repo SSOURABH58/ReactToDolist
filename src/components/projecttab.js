@@ -22,9 +22,11 @@ function ProjectTab({project,dispatchProjects,index,isProjectTabToggle,setisProj
     }
 
     const selectproject=()=>{
-      setOpenprojectlable({lable:project.lable,id:project.id})
+      if(isProjectTabToggle)
+      {setOpenprojectlable({lable:project.lable,id:project.id})
       setSelectedProject(project.id)
-      setisProjectTabToggle(!isProjectTabToggle)
+      setisProjectTabToggle(!isProjectTabToggle)}
+      
     }
 
     return(

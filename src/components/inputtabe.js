@@ -35,9 +35,9 @@ function Inputtabe({Inputtext,setInputtext,setFitler,Filter,isProjectTabToggle,s
 
     return(
         <div className="inputtabe">
-            <form action="#">
+            <form action="#" >
                 <input onChange={getinput} value={Inputtext} type="text" className="inputbox" placeholder={isProjectTabToggle?"Add a New Peoject ..":`Add to ${Openprojectlable.lable}`}/>
-                <button onClick={openprojects} className="addtask openproject" ><i className="fa fa-angle-down"></i></button>
+                <button onClick={openprojects} className="addtask openproject" type="button" ><i className="fa fa-angle-down"></i></button>
                 <button onClick={addprojects} className="addtask" type="submit"><i className="fa fa-plus-square"></i></button>
             </form>
             <div className="filtercont">
